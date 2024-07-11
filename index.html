@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+    * { font-family: 'Noto Sans KR', serif; }
+    h2 { font-weight: 900; }
+    p { font-weight: 300; }
+  </style>
+</head>
+<body class="dark:bg-neutral-800">
+  <section>
+    <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16">
+      <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">도서관 전산화 시스템</h1>
+      <hr class="w-48 h-1 mx-auto">
+      <br>
+      <form class="max-w-md mx-auto" id="search-form">   
+        <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">검색</label>
+        <div class="relative">
+          <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+            </svg>
+          </div>
+          <input type="search" id="default-search" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="도서 검색" required />
+          <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">검색</button>
+        </div>
+      </form>
+      <br>
+      <div id="output" class="mb-8 text-lg font-normal text-gray-500 lg:text-xl dark:text-gray-400"></div>
+    </div>
+  </section>
+
+  <script>
+    $(document).ready(function() {
+      let books = [];
+
+      // Function to read the books.txt file
+      $.get('books.txt', function(data) {
+        books = data.split('\n').map(book => book.trim());
+      });
+
+      // Function to handle the book selection
+      function handleBookSelection(book) {
+        // Redirect to face.html with the selected book title as a query parameter
+        window.location.href = 'face.html?book=' + encodeURIComponent(book);
+      }
+
+      // Function to search for books
+      $('#search-form').submit(function(event) {
+        event.preventDefault();
+        const query = $('#default-search').val().toLowerCase();
+        const results = books.filter(book => book.toLowerCase().includes(query));
+
+        let output = '';
+        if (results.length > 0) {
+          output = '<ul>' + results.map(book => 
+            '<li class="flex justify-between items-center mb-2">' + 
+              '<span>' + book + '</span>' + 
+              '<button class="bg-blue-700 hover:bg-blue-800 text-white font-medium py-2 px-4 rounded-lg text-sm ml-2" onclick="handleBookSelection(\'' + book + '\')">선택</button>' + 
+            '</li>').join('') + '</ul>';
+        } else {
+          output = '<p>검색 결과가 없습니다.</p>';
+        }
+        
+        $('#output').html(output);
+      });
+    });
+
+    // Make the handleBookSelection function globally accessible
+    window.handleBookSelection = function(book) {
+      window.location.href = 'face.html?book=' + encodeURIComponent(book);
+    };
+  </script>
+</body>
+</html>
