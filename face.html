@@ -74,9 +74,7 @@
         // append elements to the DOM
         document.getElementById("webcam-container").appendChild(webcam.canvas);
         labelContainer = document.getElementById("label-container");
-        for (let i = 0; i < maxPredictions; i++) { // and class labels
-            labelContainer.appendChild(document.createElement("div"));
-        }
+        labelContainer.appendChild(document.createElement("div"));
     }
 
     async function loop() {
@@ -89,21 +87,24 @@
     async function predict() {
         // predict can take in an image, video or canvas html element
         const prediction = await model.predict(webcam.canvas);
-        let isClassZeroHigh = false;
         const enteredName = document.getElementById("default-search").value.trim();
-        for (let i = 0; i < maxPredictions; i++) {
-            const classPrediction =
-                prediction[i].className + ": " + prediction[i].probability.toFixed(2);
-            labelContainer.childNodes[i].innerHTML = classPrediction;
+        let foundMatch = false;
 
-            // Check if the entered name matches the class name and if the probability is >= 0.6
-            if (prediction[i].className === enteredName && prediction[i].probability >= 0.6) {
-                isClassZeroHigh = true;
+        for (let i = 0; i < maxPredictions; i++) {
+            if (prediction[i].className === enteredName) {
+                const classPrediction =
+                    prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+                labelContainer.childNodes[0].innerHTML = classPrediction;
+
+                if (prediction[i].probability >= 0.6) {
+                    foundMatch = true;
+                }
+                break;
             }
         }
 
         // Enable button if the entered name's class probability is >= 0.6
-        document.getElementById("action-button").disabled = !isClassZeroHigh;
+        document.getElementById("action-button").disabled = !foundMatch;
     }
 
     document.addEventListener('DOMContentLoaded', function() {
