@@ -52,7 +52,7 @@
     async function predict() {
         // predict can take in an image, video or canvas html element
         const prediction = await model.predict(webcam.canvas);
-        if(rediction[0].className == "이시율" && rediction[i].probability.toFixed(2) == 1.00 ) {
+        if(rediction[0].className == "이시율" && rediction[0].probability.toFixed(2) == 1.00 ) {
             labelContainer.childNodes[0].innerHTML = "얘임"
         }
         // for (let i = 0; i < maxPredictions; i++) {
