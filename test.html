@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <div>Teachable Machine Image Model</div>
-<button type="button" onclick="init()">Start</button>
+<button type="button" id="action-button" onclick="init()" disabled>Start</button>
 <div id="webcam-container"></div>
 <div id="label-container"></div>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
@@ -52,10 +52,20 @@
     async function predict() {
         // predict can take in an image, video or canvas html element
         const prediction = await model.predict(webcam.canvas);
+        let isClassZeroHigh = false;
         for (let i = 0; i < maxPredictions; i++) {
             const classPrediction =
                 prediction[i].className + ": " + prediction[i].probability.toFixed(2);
             labelContainer.childNodes[i].innerHTML = classPrediction;
+
+            // Check if class 0's probability is greater than or equal to 0.6
+            if (i === 0 && prediction[i].probability >= 0.6) {
+                isClassZeroHigh = true;
+            }
         }
+
+        // Enable button if class 0's probability is greater than or equal to 0.6
+        document.getElementById("action-button").disabled = !isClassZeroHigh;
     }
 </script>
+</html>
