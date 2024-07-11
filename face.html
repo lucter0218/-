@@ -17,18 +17,13 @@
 <body class="dark:bg-neutral-800">
   <section>
     <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16">
-      <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">도서관 AI 시스템</h1>
+      <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">도서관 전산화 시스템</h1>
       <hr class="w-48 h-1 mx-auto">
       <br>
       <div class="max-w-md mx-auto">
         <p class="mb-4 text-lg font-normal text-gray-500 lg:text-xl dark:text-gray-400">선택한 도서:</p>
         <p class="mb-8 text-lg font-bold text-gray-900 lg:text-xl dark:text-white" id="selected-book"></p>
-        
-        <!-- Add input field for user's name -->
-        <input type="text" id="borrower-name" class="mb-4 px-3 py-2 rounded-lg border-gray-300 focus:border-green-700 focus:ring focus:ring-green-200 dark:bg-neutral-700 dark:border-gray-600 dark:focus:border-green-800 dark:focus:ring-green-400" placeholder="이름을 입력하세요">
-
-        <!-- Borrow button with dynamic disable/enable based on similarity -->
-        <button id="borrow-button" class="bg-green-700 hover:bg-green-800 text-white font-medium py-2 px-4 rounded-lg text-sm" disabled onclick="borrowBook()">대출</button>
+        <button class="bg-green-700 hover:bg-green-800 text-white font-medium py-2 px-4 rounded-lg text-sm" onclick="borrowBook()">대출</button>
       </div>
     </div>
   </section>
@@ -48,48 +43,10 @@
       }
 
       // Function to handle book borrowing
-      window.borrowBook = async function() {
-        const borrowerName = document.getElementById('borrower-name').value.trim();
-        const similarityThreshold = 0.6;  // Set your similarity threshold here
-
-        const similarityScore = await checkNameSimilarity(borrowerName);
-
-        if (similarityScore >= similarityThreshold) {
-          alert(selectedBook + "이(가) " + borrowerName + "님에 의해 대출되었습니다.");
-          // Additional logic for borrowing the book can be added here
-        } else {
-          alert("유사도가 너무 낮습니다. 다시 확인해주세요.");
-        }
+      window.borrowBook = function() {
+        alert(selectedBook + "이(가) 대출되었습니다.");
+        // Additional logic for borrowing the book can be added here
       };
-
-      // Teachable Machine model for name similarity
-      async function checkNameSimilarity(name) {
-        const modelURL = 'https://teachablemachine.withgoogle.com/models/3fQF7lK6D/';
-        const metadataURL = modelURL + 'metadata.json';
-
-        const model = await tmImage.load(modelURL + 'model.json', metadataURL);
-        const prediction = await model.predict(name);
-
-        return prediction[0].probability.toFixed(2);  // Return similarity score
-      }
-
-      // Enable borrow button based on name similarity threshold
-      document.getElementById('borrower-name').addEventListener('input', async function() {
-        const name = this.value.trim();
-        if (name.length === 0) {
-          document.getElementById('borrow-button').disabled = true;
-          return;
-        }
-
-        const similarityScore = await checkNameSimilarity(name);
-        const similarityThreshold = 0.6;  // Set your similarity threshold here
-
-        if (similarityScore >= similarityThreshold) {
-          document.getElementById('borrow-button').disabled = false;
-        } else {
-          document.getElementById('borrow-button').disabled = true;
-        }
-      });
     });
   </script>
 </body>
