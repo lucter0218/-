@@ -58,13 +58,13 @@
           alert(selectedBook + "이(가) " + borrowerName + "님에 의해 대출되었습니다.");
           // Additional logic for borrowing the book can be added here
         } else {
-          alert("이름 유사도가 너무 낮습니다. 이름을 다시 확인해주세요.");
+          alert("유사도가 너무 낮습니다. 다시 확인해주세요.");
         }
       };
 
       // Teachable Machine model for name similarity
       async function checkNameSimilarity(name) {
-        const modelURL = 'https://teachablemachine.withgoogle.com/models/your-model-id/';
+        const modelURL = 'https://teachablemachine.withgoogle.com/models/3fQF7lK6D/';
         const metadataURL = modelURL + 'metadata.json';
 
         const model = await tmImage.load(modelURL + 'model.json', metadataURL);
